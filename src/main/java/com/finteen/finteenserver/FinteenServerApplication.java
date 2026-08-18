@@ -8,9 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties(JwtProperties.class)
 public class FinteenServerApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(FinteenServerApplication.class, args);
     }
-
 }
