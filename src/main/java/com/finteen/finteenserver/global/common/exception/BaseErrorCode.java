@@ -1,4 +1,8 @@
 package com.finteen.finteenserver.global.common.exception;
 
-public class BaseErrorCode {
+import org.springframework.http.HttpStatus;
+
+public interface BaseErrorCode {
+    HttpStatus getHttpStatus();
+    String getMessage();
 }
