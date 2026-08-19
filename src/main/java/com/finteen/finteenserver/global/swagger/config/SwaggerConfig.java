@@ -17,8 +17,7 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Finteen Server")
-                .description("Finteen Server API")
+                .title("Finteen Server API")
                 .version("1.0.0");
     }
 }
