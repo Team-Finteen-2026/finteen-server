@@ -1,21 +1,17 @@
 package com.finteen.finteenserver.global.security.config;
 
-import com.finteen.finteenserver.global.security.oauth.CustomOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomOauth2UserService customOauth2UserService;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -32,12 +28,6 @@ public class SecurityConfig {
                                         "/login/oauth2/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth ->
-                        oauth
-                                .userInfoEndpoint(info ->
-                                        info.userService(customOauth2UserService)
-                                )
                 )
                 .build();
     }

@@ -1,4 +1,4 @@
-package com.finteen.finteenserver.global.security.jwt;
+package com.finteen.finteenserver.global.security.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
