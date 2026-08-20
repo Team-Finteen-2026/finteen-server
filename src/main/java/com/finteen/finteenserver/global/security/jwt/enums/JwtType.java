@@ -1,6 +1,6 @@
 package com.finteen.finteenserver.global.security.jwt.enums;
 
-public enum TokenType {
+public enum JwtType {
     ACCESS,
     REFRESH
 }

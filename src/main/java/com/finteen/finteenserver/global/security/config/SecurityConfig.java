@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth -> oauth)
                 .build();
     }
 }
