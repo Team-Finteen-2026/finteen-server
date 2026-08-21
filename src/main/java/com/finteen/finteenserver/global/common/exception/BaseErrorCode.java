@@ -3,6 +3,6 @@ package com.finteen.finteenserver.global.common.exception;
 import org.springframework.http.HttpStatus;
 
 public interface BaseErrorCode {
-    HttpStatus getHttpStatus();
+    HttpStatus getStatus();
     String getMessage();
 }
