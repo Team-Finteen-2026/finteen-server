@@ -20,7 +20,6 @@ public class JwtProvider {
                 .subject(String.valueOf(userId))
                 .claim("type", jwtType.name())
                 .issuedAt(new Date(currentTimeMillis() + getTokenExpiration(jwtType)))
-                .signWith(jwtProperties.getSecretKey())
                 .compact();
     }
 

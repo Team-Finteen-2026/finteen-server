@@ -1,6 +1,6 @@
 package com.finteen.finteenserver.domain.user.enums;
 
-public enum SocialType {
+public enum SocialProviderType {
     GOOGLE,
     KAKAO,
     NAVER,

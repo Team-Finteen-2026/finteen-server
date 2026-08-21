@@ -1,7 +1,7 @@
 package com.finteen.finteenserver.domain.user.entity;
 
 import com.finteen.finteenserver.domain.user.enums.RoleType;
-import com.finteen.finteenserver.domain.user.enums.SocialType;
+import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,21 +13,26 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleType role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SocialType socialType;
+    private SocialProviderType socialProviderType;
 
-    private String socialId;
+    private String socialProviderId;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     private String name;
 
-    private String email;
-
     private String nickname;
+
+    private String email;
 
     private String bio;
 
