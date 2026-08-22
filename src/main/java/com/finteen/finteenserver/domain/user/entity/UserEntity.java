@@ -3,9 +3,11 @@ package com.finteen.finteenserver.domain.user.entity;
 import com.finteen.finteenserver.domain.user.enums.RoleType;
 import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 @Entity
 @Table(name = "users")
 public class UserEntity {
