@@ -7,7 +7,10 @@ import com.finteen.finteenserver.domain.user.entity.UserEntity;
 import com.finteen.finteenserver.domain.user.exception.UserNotFoundException;
 import com.finteen.finteenserver.domain.user.repository.UserRepository;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
+import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
+import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtProvider jwtProvider;
 
     public DataResponse<TokenResponse> login(LoginRequest request) {
         UserEntity user = userRepository.findByUsername(request.id())
@@ -25,6 +29,13 @@ public class AuthService {
             throw new InvalidPasswordException();
         }
 
-        return null;
+        return DataResponse.ok("로그인 성공", generateTokens(user.getId()));
+    }
+
+    private TokenResponse generateTokens(Long userId) {
+        return new TokenResponse(
+                jwtProvider.generate(userId, JwtType.ACCESS),
+                jwtProvider.generate(userId, JwtType.REFRESH)
+        );
     }
 }

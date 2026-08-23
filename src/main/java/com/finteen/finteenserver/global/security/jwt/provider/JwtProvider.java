@@ -19,7 +19,9 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim("type", jwtType.name())
-                .issuedAt(new Date(currentTimeMillis() + getTokenExpiration(jwtType)))
+                .issuedAt(new Date(currentTimeMillis()))
+                .expiration(new Date(currentTimeMillis() + getTokenExpiration(jwtType)))
+                .signWith(jwtProperties.getSecretKey())
                 .compact();
     }
 
