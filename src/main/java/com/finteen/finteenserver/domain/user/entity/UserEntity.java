@@ -1,8 +1,10 @@
 package com.finteen.finteenserver.domain.user.entity;
 
-import com.finteen.finteenserver.domain.user.enums.RoleType;
+import com.finteen.finteenserver.domain.user.enums.GenderType;
+import com.finteen.finteenserver.domain.user.enums.UserRoleType;
 import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -15,32 +17,50 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRoleType role;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RoleType role;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private SocialProviderType socialProviderType;
 
     private String socialProviderId;
 
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    private String name;
-
+    @Column(nullable = false)
     private String nickname;
 
-    private String email;
-
-    private String bio;
-
-    private String profileImage;
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
 
     private LocalDate birth;
 
-    private LocalDate createdAt;
+    private String profileImage;
+
+    @Builder
+    public UserEntity(
+            UserRoleType role,
+            String email,
+            String password,
+            SocialProviderType socialProviderType,
+            String socialProviderId,
+            String nickname,
+            GenderType gender,
+            LocalDate birth,
+            String profileImage
+    ) {
+        this.role = role;
+        this.email = email;
+        this.password = password;
+        this.socialProviderType = socialProviderType;
+        this.socialProviderId = socialProviderId;
+        this.nickname = nickname;
+        this.gender = gender;
+        this.birth = birth;
+        this.profileImage = profileImage;
+    }
 }

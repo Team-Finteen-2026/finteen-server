@@ -1,8 +1,10 @@
 package com.finteen.finteenserver.domain.auth.docs;
 
 import com.finteen.finteenserver.domain.auth.dto.request.LoginRequest;
+import com.finteen.finteenserver.domain.auth.dto.request.RegisterRequest;
 import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
+import com.finteen.finteenserver.global.common.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -10,4 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface AuthDocs {
     @Operation(summary = "로그인", description = "사용자를 로그인합니다.")
     DataResponse<TokenResponse> login(LoginRequest request);
+
+    @Operation(summary = "회원가입", description = "사용자를 회원가입합니다.")
+    Response register(RegisterRequest request);
 }

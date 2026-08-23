@@ -1,6 +1,6 @@
 package com.finteen.finteenserver.domain.user.enums;
 
-public enum RoleType {
+public enum UserRoleType {
     USER,
     ADMIN
 }
