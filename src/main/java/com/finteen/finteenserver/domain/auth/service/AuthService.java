@@ -24,7 +24,9 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
 
-    public DataResponse<TokenResponse> login(LoginRequest request) {
+    public DataResponse<TokenResponse> login(
+            LoginRequest request
+    ) {
         UserEntity user = userRepository.findByEmail(request.email())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -32,7 +34,10 @@ public class AuthService {
             throw new InvalidPasswordException();
         }
 
-        return DataResponse.ok("로그인 성공", generateTokens(user.getId()));
+        return DataResponse.ok(
+                "로그인 성공",
+                generateTokens(user.getId())
+        );
     }
 
     private TokenResponse generateTokens(Long userId) {
@@ -42,7 +47,9 @@ public class AuthService {
         );
     }
 
-    public Response register(RegisterRequest request) {
+    public Response register(
+            RegisterRequest request
+    ) {
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException();
         }
