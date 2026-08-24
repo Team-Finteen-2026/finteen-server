@@ -2,6 +2,7 @@ package com.finteen.finteenserver.domain.email.controller;
 
 import com.finteen.finteenserver.domain.email.docs.EmailDocs;
 import com.finteen.finteenserver.domain.email.dto.request.VerificationCodeSendRequest;
+import com.finteen.finteenserver.domain.email.dto.request.VerificationCodeVerifyRequest;
 import com.finteen.finteenserver.domain.email.service.EmailService;
 import com.finteen.finteenserver.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,13 @@ public class EmailController implements EmailDocs {
             @RequestBody VerificationCodeSendRequest request
     ) {
         return emailService.sendVerificationCode(request);
+    }
+
+    @Override
+    @PostMapping("/verification-code/verify")
+    public Response verifyVerificationCode(
+            @RequestBody VerificationCodeVerifyRequest request
+    ) {
+        return emailService.verifyVerificationCode(request);
     }
 }

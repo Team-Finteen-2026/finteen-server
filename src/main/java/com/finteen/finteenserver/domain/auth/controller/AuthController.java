@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController implements AuthDocs {
     private final AuthService authService;
 
-    @PostMapping("/login")
     @Override
+    @PostMapping("/login")
     public DataResponse<TokenResponse> login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
-    @PostMapping("/register")
     @Override
+    @PostMapping("/register")
     public Response register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }

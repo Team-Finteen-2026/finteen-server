@@ -2,6 +2,8 @@ package com.finteen.finteenserver.domain.email.service;
 
 import com.finteen.finteenserver.domain.email.dto.request.VerificationCodeSendRequest;
 import com.finteen.finteenserver.domain.email.dto.request.VerificationCodeVerifyRequest;
+import com.finteen.finteenserver.domain.email.exception.InvalidVerificationCodeException;
+import com.finteen.finteenserver.domain.email.exception.VerificationCodeExpiredException;
 import com.finteen.finteenserver.domain.email.utils.HtmlLoader;
 import com.finteen.finteenserver.domain.email.utils.VerificationCodeGenerator;
 import com.finteen.finteenserver.global.common.dto.Response;
@@ -14,6 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,12 @@ public class EmailService {
             helper.setText(html, true);
 
             javaMailSender.send(message);
+
+            redisTemplate.opsForValue().set(
+                    request.email(),
+                    verificationCode,
+                    Duration.ofMinutes(5)
+            );
         } catch (MessagingException |IOException e) {
             throw new RuntimeException(e);
         }
@@ -50,6 +59,20 @@ public class EmailService {
     }
 
     public Response verifyVerificationCode(VerificationCodeVerifyRequest request) {
-        return Response.ok("이메일 인증 완료");
+        String storedverificationCode = redisTemplate.opsForValue().get(
+                request.email()
+        );
+
+        if (storedverificationCode == null) {
+            throw new VerificationCodeExpiredException();
+        }
+
+        if (!storedverificationCode.equals(request.VerificationCode())) {
+            throw new InvalidVerificationCodeException();
+        }
+
+        redisTemplate.delete(request.email());
+
+        return Response.ok("이메일 인증 코드 검증 완료");
     }
 }
