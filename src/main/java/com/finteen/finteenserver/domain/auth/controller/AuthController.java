@@ -2,6 +2,7 @@ package com.finteen.finteenserver.domain.auth.controller;
 
 import com.finteen.finteenserver.domain.auth.docs.AuthDocs;
 import com.finteen.finteenserver.domain.auth.dto.request.LoginRequest;
+import com.finteen.finteenserver.domain.auth.dto.request.RefreshRequest;
 import com.finteen.finteenserver.domain.auth.dto.request.RegisterRequest;
 import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
 import com.finteen.finteenserver.domain.auth.service.AuthService;
@@ -29,5 +30,11 @@ public class AuthController implements AuthDocs {
     @PostMapping("/register")
     public Response register(@RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @Override
+    @PostMapping("/refresh")
+    public DataResponse<TokenResponse> refresh(@RequestBody RefreshRequest request) {
+        return authService.refresh(request);
     }
 }

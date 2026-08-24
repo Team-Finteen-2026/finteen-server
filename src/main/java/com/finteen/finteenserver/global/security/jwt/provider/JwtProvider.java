@@ -2,6 +2,7 @@ package com.finteen.finteenserver.global.security.jwt.provider;
 
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.properties.JwtProperties;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,33 @@ public class JwtProvider {
                 .subject(String.valueOf(userId))
                 .claim("type", jwtType.name())
                 .issuedAt(new Date(currentTimeMillis()))
-                .expiration(new Date(currentTimeMillis() + getTokenExpiration(jwtType)))
+                .expiration(
+                        new Date(currentTimeMillis() + getTokenExpiration(jwtType))
+                )
                 .signWith(jwtProperties.getSecretKey())
                 .compact();
     }
 
+    public Claims parse(String token) {
+        return Jwts.parser()
+                .verifyWith(jwtProperties.getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public Long getUserId(String token) {
+        return Long.valueOf(parse(token).getSubject());
+    }
+
+    public JwtType getJwtType(String token) {
+        return JwtType.valueOf(parse(token).get("type").toString());
+    }
+
     private Long getTokenExpiration(JwtType tokenType) {
-        if (tokenType == JwtType.ACCESS) return jwtProperties.getAccessTokenExpiration();
+        if (tokenType == JwtType.ACCESS) {
+            return jwtProperties.getAccessTokenExpiration();
+        }
         return jwtProperties.getRefreshTokenExpiration();
     }
 }

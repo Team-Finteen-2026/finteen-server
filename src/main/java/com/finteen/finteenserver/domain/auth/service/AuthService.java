@@ -1,6 +1,7 @@
 package com.finteen.finteenserver.domain.auth.service;
 
 import com.finteen.finteenserver.domain.auth.dto.request.LoginRequest;
+import com.finteen.finteenserver.domain.auth.dto.request.RefreshRequest;
 import com.finteen.finteenserver.domain.auth.dto.request.RegisterRequest;
 import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
 import com.finteen.finteenserver.domain.auth.exception.EmailAlreadyExistsException;
@@ -65,5 +66,24 @@ public class AuthService {
         userRepository.save(user);
 
         return Response.ok("회원가입 성공");
+    }
+
+    public DataResponse<TokenResponse> refresh(RefreshRequest request) {
+        Long userId = jwtProvider.getUserId(
+                request.refreshToken()
+        );
+
+        String accessToken = jwtProvider.generate(
+                userId,
+                JwtType.ACCESS
+        );
+
+        return DataResponse.ok(
+                "토큰 재발급 성공",
+                new TokenResponse(
+                        accessToken,
+                        request.refreshToken()
+                )
+        );
     }
 }
