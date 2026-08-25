@@ -13,9 +13,4 @@ public interface SmsDocs {
     Response sendVerificationCode(
             @RequestBody VerificationCodeSendRequest request
     );
-
-    @Operation(summary = "인증번호 검증", description = "입력한 인증번호를 검증합니다.")
-    Response verifyVerificationCode(
-            @RequestBody VerificationCodeVerifyRequest request
-    );
 }

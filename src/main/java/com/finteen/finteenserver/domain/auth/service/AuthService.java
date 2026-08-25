@@ -28,17 +28,7 @@ public class AuthService {
     public DataResponse<TokenResponse> login(
             LoginRequest request
     ) {
-        UserEntity user = userRepository.findByEmail(request.email())
-                .orElseThrow(UserNotFoundException::new);
-
-        if (!bCryptPasswordEncoder.matches(request.password(), user.getPassword())) {
-            throw new InvalidPasswordException();
-        }
-
-        return DataResponse.ok(
-                "로그인 성공",
-                generateTokens(user.getId())
-        );
+        return null;
     }
 
     private TokenResponse generateTokens(Long userId) {
@@ -51,21 +41,7 @@ public class AuthService {
     public Response register(
             RegisterRequest request
     ) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new EmailAlreadyExistsException();
-        }
-
-        UserEntity user = UserEntity.builder()
-                .role(UserRoleType.USER)
-                .email(request.email())
-                .password(bCryptPasswordEncoder.encode(request.password()))
-                .nickname(request.nickname())
-                .gender(request.gender())
-                .birth(request.birth()).build();
-
-        userRepository.save(user);
-
-        return Response.ok("회원가입 성공");
+        return null;
     }
 
     public DataResponse<TokenResponse> refresh(RefreshRequest request) {
