@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OauthUserInfo {
+public class Oauth2UserInfo {
     private final SocialProviderType socialProviderType;
     private final String socialProviderId;
     private final String email;
