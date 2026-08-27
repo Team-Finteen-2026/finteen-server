@@ -4,8 +4,10 @@ import com.finteen.finteenserver.domain.user.enums.GenderType;
 import com.finteen.finteenserver.domain.user.enums.UserRoleType;
 import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
