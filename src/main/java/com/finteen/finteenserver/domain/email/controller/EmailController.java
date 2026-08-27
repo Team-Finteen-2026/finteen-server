@@ -18,12 +18,12 @@ public class EmailController implements EmailDocs {
     private final EmailService emailService;
 
     @PostMapping("/send")
-    public Response sendEmail(@RequestBody EmailSendRequest request) {
-        return emailService.sendEmail(request);
+    public Response sendVerificationCode(@RequestBody EmailSendRequest request) {
+        return emailService.sendVerificationCode(request);
     }
 
     @PostMapping("/verify")
-    public Response verifyEmail(@RequestBody EmailVerifyRequest request) {
-        return emailService.verifyEmail(request);
+    public Response verifyVerificationCode(@RequestBody EmailVerifyRequest request) {
+        return emailService.verifyVerificationCode(request);
     }
 }

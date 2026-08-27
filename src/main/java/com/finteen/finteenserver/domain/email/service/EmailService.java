@@ -2,7 +2,9 @@ package com.finteen.finteenserver.domain.email.service;
 
 import com.finteen.finteenserver.domain.email.dto.request.EmailSendRequest;
 import com.finteen.finteenserver.domain.email.dto.request.EmailVerifyRequest;
-import com.finteen.finteenserver.domain.email.utils.RandomCodeGenerator;
+import com.finteen.finteenserver.domain.email.exception.VerificationCodeExpiredException;
+import com.finteen.finteenserver.domain.email.exception.VerificationCodeMismatchException;
+import com.finteen.finteenserver.domain.email.utils.VerificationCodeGenerator;
 import com.finteen.finteenserver.domain.email.utils.ResourceLoader;
 import com.finteen.finteenserver.global.common.dto.Response;
 import jakarta.mail.MessagingException;
@@ -22,8 +24,8 @@ public class EmailService {
     private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender javaMailSender;
 
-    public Response sendEmail(EmailSendRequest request) {
-        String verificationCode = RandomCodeGenerator.generate();
+    public Response sendVerificationCode(EmailSendRequest request) {
+        String verificationCode = VerificationCodeGenerator.generate();
 
         try {
             String html = ResourceLoader.loadVerificationCodeTemplate(
@@ -39,6 +41,7 @@ public class EmailService {
             helper.setText(html, true);
 
             javaMailSender.send(message);
+
         } catch (MessagingException | IOException e) {
             throw new RuntimeException("이메일 인증코드 전송 실패");
         }
@@ -52,7 +55,21 @@ public class EmailService {
         return Response.ok("이메일 인증 코드 발송 성공");
     }
 
-    public Response verifyEmail(EmailVerifyRequest request) {
+    public Response verifyVerificationCode(EmailVerifyRequest request) {
+        String key = "email:verification" + request.email();
+
+        String savedVerificationCode = redisTemplate.opsForValue().get(key);
+
+        if (savedVerificationCode == null) {
+            throw new VerificationCodeExpiredException();
+        }
+
+        if (!savedVerificationCode.equals(request.verificationCode())) {
+            throw new VerificationCodeMismatchException();
+        }
+
+        redisTemplate.delete(key);
+
         return Response.ok("이메일 인증 코드 검증 완료");
     }
 }

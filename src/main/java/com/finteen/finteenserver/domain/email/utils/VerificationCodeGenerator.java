@@ -2,7 +2,7 @@ package com.finteen.finteenserver.domain.email.utils;
 
 import java.security.SecureRandom;
 
-public class RandomCodeGenerator {
+public class VerificationCodeGenerator {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     public static String generate() {
