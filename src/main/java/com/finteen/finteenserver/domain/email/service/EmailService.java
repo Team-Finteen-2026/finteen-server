@@ -56,19 +56,25 @@ public class EmailService {
     }
 
     public Response verifyVerificationCode(EmailVerifyRequest request) {
-        String key = "email:verification" + request.email();
+        String key = "email:verification:" + request.email();
 
-        String savedVerificationCode = redisTemplate.opsForValue().get(key);
+        String storedVerificationCode = redisTemplate.opsForValue().get(key);
 
-        if (savedVerificationCode == null) {
+        if (storedVerificationCode == null) {
             throw new VerificationCodeExpiredException();
         }
 
-        if (!savedVerificationCode.equals(request.verificationCode())) {
+        if (!storedVerificationCode.equals(request.verificationCode())) {
             throw new VerificationCodeMismatchException();
         }
 
         redisTemplate.delete(key);
+
+        redisTemplate.opsForValue().set(
+                "email:verified:" + request.email(),
+                "true",
+                Duration.ofMinutes(10)
+        );
 
         return Response.ok("이메일 인증 코드 검증 완료");
     }

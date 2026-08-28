@@ -4,12 +4,18 @@ import com.finteen.finteenserver.domain.auth.dto.request.LoginRequest;
 import com.finteen.finteenserver.domain.auth.dto.request.RefreshRequest;
 import com.finteen.finteenserver.domain.auth.dto.request.RegisterRequest;
 import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
+import com.finteen.finteenserver.domain.auth.exception.InvalidPasswordException;
+import com.finteen.finteenserver.domain.email.exception.EmailVerificationRequiredException;
+import com.finteen.finteenserver.domain.user.entity.UserEntity;
+import com.finteen.finteenserver.domain.user.enums.UserRoleType;
+import com.finteen.finteenserver.domain.user.exception.UserNotFoundException;
 import com.finteen.finteenserver.domain.user.repository.UserRepository;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
 import com.finteen.finteenserver.global.common.dto.Response;
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +25,27 @@ public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public DataResponse<TokenResponse> login(
             LoginRequest request
     ) {
-        return null;
+        UserEntity user = userRepository.findByEmail(request.email())
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!bCryptPasswordEncoder.matches(
+                request.password(),
+                user.getPassword()
+        )) {
+            throw new InvalidPasswordException();
+        }
+
+        TokenResponse tokens = generateTokens(user.getId());
+
+        return DataResponse.ok(
+                "로그인 성공",
+                tokens
+        );
     }
 
     private TokenResponse generateTokens(Long userId) {
@@ -36,7 +58,28 @@ public class AuthService {
     public Response register(
             RegisterRequest request
     ) {
-        return null;
+        String key = "email:verified:" + request.email();
+
+        String verified = redisTemplate.opsForValue().get(key);
+
+        if (!"true".equals(verified)) {
+            throw new EmailVerificationRequiredException();
+        }
+
+        UserEntity user = UserEntity.builder()
+                .role(UserRoleType.USER)
+                .email(request.email())
+                .password(bCryptPasswordEncoder.encode(request.password()))
+                .name(request.name())
+                .gender(request.gender())
+                .birth(request.birth())
+                .build();
+
+        userRepository.save(user);
+
+        redisTemplate.delete(key);
+
+        return Response.ok("회원가입 성공");
     }
 
     public DataResponse<TokenResponse> refresh(RefreshRequest request) {

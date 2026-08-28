@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Response {
     private HttpStatus status;
     private String message;
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private final LocalDateTime timestamp = LocalDateTime.now();
 
     public static Response ok(String message) {
         return Response.builder()

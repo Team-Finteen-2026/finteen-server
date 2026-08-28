@@ -5,8 +5,9 @@ import com.finteen.finteenserver.domain.user.enums.GenderType;
 import java.time.LocalDate;
 
 public record RegisterRequest(
-        String phone,
+        String email,
         String password,
+        String name,
         String nickname,
         LocalDate birth,
         GenderType gender
