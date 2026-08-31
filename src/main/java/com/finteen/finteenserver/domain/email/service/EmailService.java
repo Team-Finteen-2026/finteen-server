@@ -7,11 +7,9 @@ import com.finteen.finteenserver.domain.email.exception.VerificationCodeMismatch
 import com.finteen.finteenserver.domain.email.utils.VerificationCodeGenerator;
 import com.finteen.finteenserver.domain.email.utils.ResourceLoader;
 import com.finteen.finteenserver.global.common.dto.Response;
-import com.finteen.finteenserver.global.redis.service.RedisService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -24,7 +22,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender javaMailSender;
-    private final RedisService redisService;
+    private final StringRedisTemplate redisTemplate;
 
     public Response sendVerificationCode(EmailSendRequest request) {
         String verificationCode = VerificationCodeGenerator.generate();
@@ -48,8 +46,8 @@ public class EmailService {
             throw new RuntimeException("이메일 인증코드 전송 실패");
         }
 
-        redisService.set(
-                "email:verification:code" + request.email(),
+        redisTemplate.opsForValue().set(
+                "email:verification:code:" + request.email(),
                 verificationCode,
                 Duration.ofMinutes(5)
         );
@@ -58,8 +56,8 @@ public class EmailService {
     }
 
     public Response verifyVerificationCode(EmailVerifyRequest request) {
-        String storedVerificationCode = redisService.get(
-                "email:verification:code" + request.email()
+        String storedVerificationCode = redisTemplate.opsForValue().get(
+                "email:verification:code:" + request.email()
         );
 
         if (storedVerificationCode == null) {
@@ -70,14 +68,15 @@ public class EmailService {
             throw new VerificationCodeMismatchException();
         }
 
-        redisService.delete(
-                "email:verification:code" + request.email()
+        redisTemplate.delete(
+                "email:verification:code:" + request.email()
         );
 
-        redisService.set(
-                "email:verificaton:verified" + request.email(),
-
-        )
+        redisTemplate.opsForValue().set(
+                "email:verification:verified:" + request.email(),
+                "",
+                Duration.ofMinutes(5)
+        );
 
         return Response.ok("이메일 인증 코드 검증 완료");
     }

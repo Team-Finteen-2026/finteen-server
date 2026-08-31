@@ -15,7 +15,7 @@ import com.finteen.finteenserver.global.common.dto.Response;
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     public DataResponse<TokenResponse> login(
             LoginRequest request
@@ -58,11 +58,9 @@ public class AuthService {
     public Response register(
             RegisterRequest request
     ) {
-        String key = "email:verified:" + request.email();
+        String key = "email:verification:verified:" + request.email();
 
-        String verified = redisTemplate.opsForValue().get(key);
-
-        if (!"true".equals(verified)) {
+        if(!redisTemplate.hasKey(key)) {
             throw new EmailVerificationRequiredException();
         }
 
