@@ -1,12 +1,11 @@
 package com.finteen.finteenserver;
 
-import com.finteen.finteenserver.global.security.jwt.properties.JwtProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-@EnableConfigurationProperties(JwtProperties.class)
+@ConfigurationPropertiesScan
 public class FinteenServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(FinteenServerApplication.class, args);
