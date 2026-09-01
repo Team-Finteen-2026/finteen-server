@@ -69,6 +69,7 @@ public class AuthService {
                 .email(request.email())
                 .password(bCryptPasswordEncoder.encode(request.password()))
                 .name(request.name())
+                .nickname(request.nickname())
                 .gender(request.gender())
                 .birth(request.birth())
                 .build();

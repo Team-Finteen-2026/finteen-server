@@ -4,14 +4,18 @@ import com.finteen.finteenserver.domain.user.enums.GenderType;
 import com.finteen.finteenserver.domain.user.enums.UserRoleType;
 import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +47,9 @@ public class UserEntity {
 
     private String profileImage;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @Builder
     public UserEntity(
             UserRoleType role,
@@ -66,5 +73,10 @@ public class UserEntity {
         this.gender = gender;
         this.birth = birth;
         this.profileImage = profileImage;
+    }
+
+    @PrePersist
+    protected void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
     }
 }
