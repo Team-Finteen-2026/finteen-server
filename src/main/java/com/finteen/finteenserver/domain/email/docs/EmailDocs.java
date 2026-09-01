@@ -9,9 +9,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Email", description = "이메일 인증")
 public interface EmailDocs {
-    @Operation(summary = "인증코드 발송", description = "이메일로 인증코드를 발송합니다.")
+    @Operation(
+            summary = "인증코드 발송",
+            description = "이메일로 인증코드를 발송합니다."
+    )
     Response sendVerificationCode(@RequestBody EmailSendRequest request);
 
-    @Operation(summary = "인증코드 검증", description = "인증코드의 일치 여부를 확인합니다.")
+    @Operation(
+            summary = "인증코드 검증",
+            description = "인증코드의 일치 여부를 확인합니다."
+    )
     Response verifyVerificationCode(@RequestBody EmailVerifyRequest request);
 }

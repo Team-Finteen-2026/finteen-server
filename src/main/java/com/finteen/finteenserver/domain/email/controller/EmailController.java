@@ -5,6 +5,7 @@ import com.finteen.finteenserver.domain.email.dto.request.EmailSendRequest;
 import com.finteen.finteenserver.domain.email.dto.request.EmailVerifyRequest;
 import com.finteen.finteenserver.domain.email.service.EmailService;
 import com.finteen.finteenserver.global.common.dto.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,9 @@ public class EmailController implements EmailDocs {
     private final EmailService emailService;
 
     @PostMapping("/send")
-    public Response sendVerificationCode(@RequestBody EmailSendRequest request) {
+    public Response sendVerificationCode(
+            @Valid @RequestBody EmailSendRequest request
+    ) {
         return emailService.sendVerificationCode(request);
     }
 
