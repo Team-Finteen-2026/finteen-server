@@ -37,4 +37,10 @@ public class AuthController implements AuthDocs {
     public DataResponse<TokenResponse> refresh(@RequestBody RefreshRequest request) {
         return authService.refresh(request);
     }
+
+    @Override
+    @PostMapping("/logout")
+    public Response logout() {
+        return authService.logout();
+    }
 }

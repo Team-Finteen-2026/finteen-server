@@ -1,6 +1,8 @@
 package com.finteen.finteenserver.global.security.config;
 
 import com.finteen.finteenserver.domain.oauth.service.CustomOauth2UserService;
+import com.finteen.finteenserver.global.security.jwt.filter.JwtFilter;
+import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +11,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomOauth2UserService customOauth2UserService;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,9 +35,15 @@ public class SecurityConfig {
                                         "/oauth2/**",
                                         "/login/oauth2/**",
                                         "/email/**",
-                                        "/auth/**"
+                                        "/auth/login",
+                                        "/auth/register",
+                                        "/auth/refresh"
                                 ).permitAll()
                                 .anyRequest().authenticated()
+                )
+                .addFilterBefore(
+                        new JwtFilter(jwtProvider),
+                        UsernamePasswordAuthenticationFilter.class
                 )
                 .oauth2Login(oauth ->
                         oauth

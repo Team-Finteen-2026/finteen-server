@@ -16,6 +16,8 @@ import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +29,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final StringRedisTemplate redisTemplate;
 
-    public DataResponse<TokenResponse> login(
-            LoginRequest request
-    ) {
+    public DataResponse<TokenResponse> login(LoginRequest request) {
         UserEntity user = userRepository.findByEmail(request.email())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -49,15 +49,28 @@ public class AuthService {
     }
 
     private TokenResponse generateTokens(Long userId) {
+        String accessToken = jwtProvider.generate(
+                userId,
+                JwtType.ACCESS
+        );
+
+        String refreshToken = jwtProvider.generate(
+                userId,
+                JwtType.REFRESH
+        );
+
+        redisTemplate.opsForValue().set(
+                "refresh:" + userId,
+                refreshToken
+        );
+
         return new TokenResponse(
-                jwtProvider.generate(userId, JwtType.ACCESS),
-                jwtProvider.generate(userId, JwtType.REFRESH)
+                accessToken,
+                refreshToken
         );
     }
 
-    public Response register(
-            RegisterRequest request
-    ) {
+    public Response register(RegisterRequest request) {
         String key = "email:verification:verified:" + request.email();
 
         if(!redisTemplate.hasKey(key)) {
@@ -98,5 +111,20 @@ public class AuthService {
                         request.refreshToken()
                 )
         );
+    }
+
+    public Response logout() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId = (Long) authentication.getPrincipal();
+
+        redisTemplate.delete(
+                "refresh:" + userId
+        );
+
+        SecurityContextHolder.clearContext();
+
+        return Response.ok("로그아웃 성공");
     }
 }
