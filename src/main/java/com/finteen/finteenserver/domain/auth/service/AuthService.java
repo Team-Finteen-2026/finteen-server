@@ -13,7 +13,7 @@ import com.finteen.finteenserver.domain.user.repository.UserRepository;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
 import com.finteen.finteenserver.global.common.dto.Response;
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
-import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
+import com.finteen.finteenserver.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;

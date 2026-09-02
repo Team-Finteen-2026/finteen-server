@@ -2,7 +2,7 @@ package com.finteen.finteenserver.global.security.config;
 
 import com.finteen.finteenserver.domain.oauth.service.CustomOauth2UserService;
 import com.finteen.finteenserver.global.security.jwt.filter.JwtAuthenticationFilter;
-import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
+import com.finteen.finteenserver.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.finteen.finteenserver.global.security.jwt.provider;
+package com.finteen.finteenserver.global.security.jwt;
 
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.properties.JwtProperties;
