@@ -1,7 +1,7 @@
 package com.finteen.finteenserver.global.security.config;
 
 import com.finteen.finteenserver.domain.oauth.service.CustomOauth2UserService;
-import com.finteen.finteenserver.global.security.jwt.filter.JwtFilter;
+import com.finteen.finteenserver.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.finteen.finteenserver.global.security.jwt.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(
-                        new JwtFilter(jwtProvider),
+                        new JwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .oauth2Login(oauth ->
