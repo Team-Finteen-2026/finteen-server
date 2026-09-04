@@ -1,7 +1,7 @@
 package com.finteen.finteenserver.domain.user.entity;
 
 import com.finteen.finteenserver.domain.user.enums.GenderType;
-import com.finteen.finteenserver.domain.user.enums.UserRoleType;
+import com.finteen.finteenserver.domain.user.enums.UserRole;
 import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,7 +23,7 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRoleType role;
+    private UserRole role;
 
     @Column(unique = true)
     private String email;
@@ -52,7 +52,7 @@ public class UserEntity {
 
     @Builder
     public UserEntity(
-            UserRoleType role,
+            UserRole role,
             String email,
             String password,
             SocialProviderType socialProviderType,

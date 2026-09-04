@@ -7,7 +7,7 @@ import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
 import com.finteen.finteenserver.domain.auth.exception.InvalidPasswordException;
 import com.finteen.finteenserver.domain.email.exception.EmailVerificationRequiredException;
 import com.finteen.finteenserver.domain.user.entity.UserEntity;
-import com.finteen.finteenserver.domain.user.enums.UserRoleType;
+import com.finteen.finteenserver.domain.user.enums.UserRole;
 import com.finteen.finteenserver.domain.user.exception.UserNotFoundException;
 import com.finteen.finteenserver.domain.user.repository.UserRepository;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
@@ -40,7 +40,10 @@ public class AuthService {
             throw new InvalidPasswordException();
         }
 
-        TokenResponse tokens = generateTokens(user.getId());
+        TokenResponse tokens = generateTokens(
+                user.getId(),
+                user.getRole()
+        );
 
         return DataResponse.ok(
                 "로그인 성공",
@@ -48,15 +51,20 @@ public class AuthService {
         );
     }
 
-    private TokenResponse generateTokens(Long userId) {
+    private TokenResponse generateTokens(
+            Long userId,
+            UserRole userRole
+    ) {
         String accessToken = jwtProvider.generate(
+                JwtType.ACCESS,
                 userId,
-                JwtType.ACCESS
+                userRole
         );
 
         String refreshToken = jwtProvider.generate(
+                JwtType.REFRESH,
                 userId,
-                JwtType.REFRESH
+                userRole
         );
 
         redisTemplate.opsForValue().set(
@@ -78,7 +86,7 @@ public class AuthService {
         }
 
         UserEntity user = UserEntity.builder()
-                .role(UserRoleType.USER)
+                .role(UserRole.USER)
                 .email(request.email())
                 .password(bCryptPasswordEncoder.encode(request.password()))
                 .name(request.name())
@@ -99,9 +107,13 @@ public class AuthService {
                 request.refreshToken()
         );
 
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
         String accessToken = jwtProvider.generate(
+                JwtType.ACCESS,
                 userId,
-                JwtType.ACCESS
+                user.getRole()
         );
 
         return DataResponse.ok(

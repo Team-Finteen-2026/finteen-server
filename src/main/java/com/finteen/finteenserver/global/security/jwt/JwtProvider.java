@@ -1,5 +1,7 @@
 package com.finteen.finteenserver.global.security.jwt;
 
+import com.finteen.finteenserver.domain.user.entity.UserEntity;
+import com.finteen.finteenserver.domain.user.enums.UserRole;
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
@@ -16,13 +18,20 @@ import static java.lang.System.currentTimeMillis;
 public class JwtProvider {
     private final JwtProperties jwtProperties;
 
-    public String generate(Long userId, JwtType jwtType) {
+    public String generate(
+            JwtType jwtType,
+            Long userId,
+            UserRole userRole
+    ) {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
+                .claim("role", userRole.name())
                 .claim("type", jwtType.name())
                 .issuedAt(new Date(currentTimeMillis()))
                 .expiration(
-                        new Date(currentTimeMillis() + getTokenExpiration(jwtType))
+                        new Date(
+                                currentTimeMillis() + getTokenExpiration(jwtType)
+                        )
                 )
                 .signWith(jwtProperties.getSecretKey())
                 .compact();
@@ -40,8 +49,10 @@ public class JwtProvider {
         return Long.valueOf(parse(token).getSubject());
     }
 
-    public JwtType getJwtType(String token) {
-        return JwtType.valueOf(parse(token).get("type").toString());
+    public UserRole getUserRole(String token) {
+        return UserRole.valueOf(
+                parse(token).get("role", String.class)
+        );
     }
 
     private Long getTokenExpiration(JwtType tokenType) {
