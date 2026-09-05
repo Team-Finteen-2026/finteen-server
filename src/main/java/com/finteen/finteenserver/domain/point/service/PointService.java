@@ -14,12 +14,12 @@ public class PointService {
     private final UserAuthenticationHolder userAuthenticationHolder;
     private final PointRepository pointRepository;
 
-    public DataResponse<PointResponse> getPoints() {
+    public DataResponse<PointResponse> getMyPoints() {
         Long userId = userAuthenticationHolder.getUserId();
         PointEntity point = pointRepository.findByUserId(userId);
 
         return DataResponse.ok(
-                "포인트 조회 성공",
+                "내 포인트 조회 성공",
                 new PointResponse(point.getPoint())
         );
     }

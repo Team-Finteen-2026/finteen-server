@@ -17,7 +17,7 @@ public class PointController implements PointDocs {
 
     @Override
     @GetMapping
-    public DataResponse<PointResponse> getPoints() {
-        return pointService.getPoints();
+    public DataResponse<PointResponse> getMyPoints() {
+        return pointService.getMyPoints();
     }
 }
