@@ -1,9 +1,9 @@
 package com.finteen.finteenserver.global.security.config;
 
-import com.finteen.finteenserver.domain.oauth.service.CustomOauth2UserService;
 import com.finteen.finteenserver.global.security.jwt.TokenExtractor;
 import com.finteen.finteenserver.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.finteen.finteenserver.global.security.jwt.JwtProvider;
+import com.finteen.finteenserver.global.security.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomOauth2UserService customOauth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtProvider jwtProvider;
     private final TokenExtractor tokenExtractor;
 
@@ -54,7 +54,7 @@ public class SecurityConfig {
                         oauth
                                 .userInfoEndpoint(userInfo ->
                                         userInfo
-                                                .userService(customOauth2UserService)
+                                                .userService(customOAuth2UserService)
                                 )
                 )
                 .build();

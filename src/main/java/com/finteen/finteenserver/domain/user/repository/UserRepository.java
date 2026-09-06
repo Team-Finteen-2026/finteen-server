@@ -1,7 +1,7 @@
 package com.finteen.finteenserver.domain.user.repository;
 
 import com.finteen.finteenserver.domain.user.entity.UserEntity;
-import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
+import com.finteen.finteenserver.domain.user.enums.SocialProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(String email);
 
     Optional<UserEntity> findBySocialProviderTypeAndSocialProviderId(
-            SocialProviderType socialProviderType,
+            SocialProvider SocialProvider,
             String socialProviderId
     );
 }

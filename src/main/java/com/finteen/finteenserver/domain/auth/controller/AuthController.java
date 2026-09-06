@@ -8,6 +8,7 @@ import com.finteen.finteenserver.domain.auth.dto.response.TokenResponse;
 import com.finteen.finteenserver.domain.auth.service.AuthService;
 import com.finteen.finteenserver.global.common.dto.DataResponse;
 import com.finteen.finteenserver.global.common.dto.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

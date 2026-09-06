@@ -1,15 +1,13 @@
 package com.finteen.finteenserver.domain.user.entity;
 
-import com.finteen.finteenserver.domain.user.enums.GenderType;
 import com.finteen.finteenserver.domain.user.enums.UserRole;
-import com.finteen.finteenserver.domain.user.enums.SocialProviderType;
+import com.finteen.finteenserver.domain.user.enums.SocialProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,19 +29,12 @@ public class UserEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private SocialProviderType socialProviderType;
+    private SocialProvider provider;
 
-    private String socialProviderId;
-
-    private String name;
+    private String providerId;
 
     @Column(nullable = false)
     private String nickname;
-
-    @Enumerated(EnumType.STRING)
-    private GenderType gender;
-
-    private LocalDate birth;
 
     private String profileImage;
 
@@ -55,23 +46,17 @@ public class UserEntity {
             UserRole role,
             String email,
             String password,
-            SocialProviderType socialProviderType,
-            String socialProviderId,
-            String name,
+            SocialProvider provider,
+            String providerId,
             String nickname,
-            GenderType gender,
-            LocalDate birth,
             String profileImage
     ) {
         this.role = role;
         this.email = email;
         this.password = password;
-        this.socialProviderType = socialProviderType;
-        this.socialProviderId = socialProviderId;
-        this.name = name;
+        this.provider = provider;
+        this.providerId = providerId;
         this.nickname = nickname;
-        this.gender = gender;
-        this.birth = birth;
         this.profileImage = profileImage;
     }
 

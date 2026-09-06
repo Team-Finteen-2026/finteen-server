@@ -14,9 +14,9 @@ import com.finteen.finteenserver.global.common.dto.DataResponse;
 import com.finteen.finteenserver.global.common.dto.Response;
 import com.finteen.finteenserver.global.security.jwt.enums.JwtType;
 import com.finteen.finteenserver.global.security.jwt.JwtProvider;
+import com.finteen.finteenserver.global.security.jwt.utils.UserAuthenticationHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
     private final StringRedisTemplate redisTemplate;
+    private final UserAuthenticationHolder userAuthenticationHolder;
 
     public DataResponse<TokenResponse> login(LoginRequest request) {
         UserEntity user = userRepository.findByEmail(request.email())
@@ -89,10 +90,7 @@ public class AuthService {
                 .role(UserRole.USER)
                 .email(request.email())
                 .password(bCryptPasswordEncoder.encode(request.password()))
-                .name(request.name())
                 .nickname(request.nickname())
-                .gender(request.gender())
-                .birth(request.birth())
                 .build();
 
         userRepository.save(user);
@@ -103,9 +101,7 @@ public class AuthService {
     }
 
     public DataResponse<TokenResponse> refresh(RefreshRequest request) {
-        Long userId = jwtProvider.getUserId(
-                request.refreshToken()
-        );
+        Long userId = userAuthenticationHolder.getUserId();
 
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
@@ -126,10 +122,7 @@ public class AuthService {
     }
 
     public Response logout() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId = userAuthenticationHolder.getUserId();
 
         redisTemplate.delete(
                 "refresh:" + userId
