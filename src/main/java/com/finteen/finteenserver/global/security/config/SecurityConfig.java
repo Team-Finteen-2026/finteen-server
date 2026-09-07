@@ -3,6 +3,8 @@ package com.finteen.finteenserver.global.security.config;
 import com.finteen.finteenserver.global.security.jwt.TokenExtractor;
 import com.finteen.finteenserver.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.finteen.finteenserver.global.security.jwt.JwtProvider;
+import com.finteen.finteenserver.global.security.oauth2.handler.OAuth2FailureHandler;
+import com.finteen.finteenserver.global.security.oauth2.handler.OAuth2SuccessHandler;
 import com.finteen.finteenserver.global.security.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +21,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
     private final JwtProvider jwtProvider;
     private final TokenExtractor tokenExtractor;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -56,6 +62,8 @@ public class SecurityConfig {
                                         userInfo
                                                 .userService(customOAuth2UserService)
                                 )
+                                .successHandler(oAuth2SuccessHandler)
+                                .failureHandler(oAuth2FailureHandler)
                 )
                 .build();
     }
