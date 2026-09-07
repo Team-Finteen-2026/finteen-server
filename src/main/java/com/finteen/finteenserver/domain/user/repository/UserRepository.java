@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(String email);
 
     Optional<UserEntity> findBySocialProviderTypeAndSocialProviderId(
-            SocialProvider SocialProvider,
-            String socialProviderId
+            SocialProvider provider,
+            String providerId
     );
 }
